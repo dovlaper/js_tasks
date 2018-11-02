@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <script>
+            x2 = "x-body";
+            var x = "x-head";
+            let y = "y-head";
+            const z = "z-head";
+        </script>
+        <script>
+            console.log("iz heada");
+            var f = function(){
+                console.log(x);
+                console.log(y);
+                console.log(z);
+                console.log(x2);
+                console.log(y2);
+                console.log(z2);
+            }
+            f();
+
+        </script>
+    </head>
+    <body>
+        <script>
+            console.log("iz body");
+            x2 = "x-body";
+            var y2 = "y-body";
+            var z2 = "z-body";
+            f();
+        </script>
+
+    </body>
+</html>
