@@ -3,20 +3,8 @@
 var foo1 = function(){
     console.log("form function: " + x);
 };
-
-
 // foo1();
 x = 3;
-
-
-
-
-
-
-
-
-
-
 item1 = "global"
 {
     var item2 = "scope1";
