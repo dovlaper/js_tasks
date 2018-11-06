@@ -63,8 +63,8 @@ class Patient extends Person {
     this.doctor = doctor;
     this.doctor.addPatient(this);
     Logger.log(
-      `Pacijent ${this.name} ${this.lastname} odabrao lekara ${this.name} ${
-        this.lastname
+      `Pacijent ${this.name} ${this.lastname} odabrao lekara ${doctor.name} ${
+        doctor.lastname
       }`
     );
   }
