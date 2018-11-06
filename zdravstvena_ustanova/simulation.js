@@ -1,34 +1,41 @@
-var doktor1 = new Doktor("Milan","Grozdanic","zubar");
-console.log(dateMakeup(new Date()) + " Doktor Milan kreiran");
+class Logger {
+  static log(data) {
+    var date = dateMakeup(new Date());
+    console.log(`[ ${date} ] ${data}`);
+  }
+}
 
-var pacijent1 = new Pacijent("Dragan","Aleksic","2004995838292","323122");
-console.log(dateMakeup(new Date()) + " Pacijent Dragan kreiran");
-
-pacijent1.odaberiDoktora(doktor1);
-console.log(dateMakeup(new Date()) + " Pacijent Dragan odabrao doktora Milana za svog doktora");
-var promise1 = doktor1.zakaziPregled(pacijent1);
+var doktor1 = new Doctor(`Milan`, `Grozdanic`, `zubar`);
+var pacijent1 = new Patient(`Dragan`, `Aleksic`, `2004995838292`, `323122`);
+pacijent1.setDoctor(doktor1);
+var promise1 = doktor1.setAppointment(pacijent1);
 promise1
-    .then((pacijent) => Ustanova.pregledi[doktor1] = new NivoSecera(300, new Date("2019-03-25T12:00:00Z")))
-    .catch(alert);
-console.log(dateMakeup(new Date()) + " Preged zakazan");
+  .then(pacijent =>
+    Institution.saveAppointment(
+      new SugarLevel(300, new Date(`2019-03-25T12:00:00Z`)),
+      doktor1
+    )
+  )
+  .catch(alert);
 
-var pregledKrv = new KrvniPritisak(300,200,100);
+var pregledKrv = new BloodPressure(300, 200, 100);
+doktor1
+  .setAppointment(pacijent1)
+  .then(Institution.saveAppointment(pregledKrv, doktor1))
+  .catch(alert);
+pacijent1.doAppointment(pregledKrv);
 
-doktor1.zakaziPregled(pacijent1)
-    .then((pacijent) => Ustanova.pregledi[doktor1] = pregledKrv)
-    .catch(alert);
-console.log(dateMakeup(new Date()) + " Preged zakazan");
-
-pacijent1.obaviPregled(pregledKrv);
-console.log(dateMakeup(new Date()) + " Pregled obavljen");
-
-function dateMakeup(date){
-    var options = {
-        hour: "numeric", minute: "numeric", second: "numeric", hour12: false, timeZone: "Europe/Belgrade"
-    };
-    var formaterTime = new Intl.DateTimeFormat("sr-RS", options);
-    var vreme = formaterTime.format(date);
-    var formaterDate = new Intl.DateTimeFormat("sr-RS");
-    var datum = formaterDate.format(date);
-    return datum + " " + vreme;
+function dateMakeup(date) {
+  var options = {
+    hour: `numeric`,
+    minute: `numeric`,
+    second: `numeric`,
+    hour12: false,
+    timeZone: `Europe/Belgrade`
+  };
+  var formaterTime = new Intl.DateTimeFormat(`sr-RS`, options);
+  var vreme = formaterTime.format(date);
+  var formaterDate = new Intl.DateTimeFormat(`sr-RS`);
+  var datum = formaterDate.format(date);
+  return `${datum} ${vreme}`;
 }

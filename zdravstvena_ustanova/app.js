@@ -1,100 +1,111 @@
-let _pregledi = {};
+var _appointments = {};
 
-class Ustanova{
+class Institution {
+  static get appointments() {
+    return _appointments;
+  }
 
-    static get pregledi(){ return _pregledi; }
+  static saveAppointment(appointment, doctor) {
+    this.appointments[appointment] = doctor;
+  }
 
-    static sacuvajPregled(pregled, doktor){
-        pregledi[pregled] = doktor;
-    }
-
-    static obrisiPregled(pregled){
-        delete this.pregledi[pregled];
-    }
-
-}
-
-class Osoba{
-	constructor(ime, prezime){
-  	this.ime =ime;
-    this.prezime = prezime;
+  static deleteAppointment(appointment) {
+    delete this.appointments[appointment];
   }
 }
 
-class Doktor extends Osoba{
-
-	constructor(ime, prezime, specijalnost){
-        super(ime, prezime);
-        this.specijalnost = specijalnost;
-        this.pacijenti = [];
-    }
-
-    zakaziPregled(pacijent) {
-        return new Promise( (resolve, reject) => {
-            if(this.pacijenti.includes(pacijent)){
-                resolve(pacijent);
-            }
-            else{
-                reject(new Error("Pacijent " + pacijent['ime'] + " " + pacijent['prezime'] + " nije pacijent doktora " + this.ime + " " + this.prezime));
-            }
-        } );
-    }
+class Person {
+  constructor(name, lastName) {
+    this.name = name;
+    this.lastName = lastName;
+  }
 }
 
-class Pacijent extends Osoba{
+class Doctor extends Person {
+  constructor(name, lastName, specialty) {
+    super(name, lastName);
+    this.specialty = specialty;
+    this.patients = [];
+    Logger.log(`Doktor ${name} kreiran`);
+  }
 
-	constructor(ime, prezime, jmbg, brojKartona){
-        super(ime, prezime);
-        this.jmbg = jmbg;
-        this.brojKartona = brojKartona;
-		this.doktor = null;
-    }
+  addPatient(patient) {
+    this.patients.push(patient);
+  }
 
-    odaberiDoktora(doktor){
-        this.doktor = doktor;
-        doktor.pacijenti.push(this);
-    }
-
-    obaviPregled(pregled){
-        Ustanova.obrisiPregled(pregled);
-    }
+  setAppointment(patient) {
+    return new Promise((resolve, reject) => {
+      if (this.patients.includes(patient)) {
+        resolve(patient);
+      } else {
+        reject(
+          new Error(
+            `Pacijent ${patient[`name`]} ${
+              patient[`lastName`]
+            } nije pacijent Doctora ${this.name} ${this.lastName}`
+          )
+        );
+      }
+    });
+  }
 }
 
-class Pregled{
+class Patient extends Person {
+  constructor(name, lastName, jmbg, medicalCard) {
+    super(name, lastName);
+    this.jmbg = jmbg;
+    this.medicalCard = medicalCard;
+    this.doctor = null;
+    Logger.log(`Pacijent ${name} kreiran`);
+  }
 
-    constructor(datumIVreme, pacijent){
-        this.datumIVreme = datumIVreme;
-        this.pacijent = pacijent;
-    }
+  setDoctor(doctor) {
+    this.doctor = doctor;
+    this.doctor.addPatient(this);
+    Logger.log(
+      `Pacijent ${this.name} ${this.lastname} odabrao lekara ${this.name} ${
+        this.lastname
+      }`
+    );
+  }
+
+  doAppointment(appointment) {
+    Institution.deleteAppointment(appointment);
+    Logger.log(`Pregled obavljen`);
+  }
 }
 
-class KrvniPritisak extends Pregled{
-
-    constructor(gornjaVrednost, donjaVrednost, puls){
-        super(new Date());
-        this.gornjaVrednost = gornjaVrednost;
-        this.donjaVrednost = donjaVrednost;
-        this.puls = puls;
-    }
-
+class Appointment {
+  constructor(dateTime, patient) {
+    this.dateTime = dateTime;
+    this.patient = patient;
+  }
 }
 
-class NivoSecera extends Pregled{
-
-    constructor(vrednost, vremePoslednjegObroka){
-        super(new Date());
-        this.vrednost = vrednost;
-        this.vremePoslednjegObroka = vremePoslednjegObroka;
-    }
-
+class BloodPressure extends Appointment {
+  constructor(upper, lower, pulse) {
+    super(new Date());
+    this.upper = upper;
+    this.lower = lower;
+    this.pulse = pulse;
+    Logger.log(`Pregled kreiran`);
+  }
 }
 
-class NivoHolesterola extends Pregled{
+class SugarLevel extends Appointment {
+  constructor(value, timeLastMeal) {
+    super(new Date());
+    this.value = value;
+    this.timeLastMeal = timeLastMeal;
+    Logger.log('Pregled kreiran');
+  }
+}
 
-    constructor(vrednost, vremePoslednjegObroka){
-        super(new Date());
-        this.vrednost = vrednost;
-        this.vremePoslednjegObroka = vremePoslednjegObroka;
-    }
-
+class Cholesterol extends Appointment {
+  constructor(value, timeLastMeal) {
+    super(new Date());
+    this.value = value;
+    this.timeLastMeal = timeLastMeal;
+    Logger.log('Pregled kreiran');
+  }
 }
